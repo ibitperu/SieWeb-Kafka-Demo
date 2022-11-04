@@ -4,84 +4,58 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\LibretaNota;
-use App\Models\User;
+use App\Models\UsuarioDispositivo;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 
 class LibretaNotaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return User::all();
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function generarLibretaNota(Request $request, $idUsuario, $bimestre)
     {
-        //
-    }
+        //1. Generamos el PDF
+        //2. Almacenamos el PDF en el repositorio cloud
+        //3. La Url del PDF le devolvemos al usuario
+        $urlDocumento = "https://www.africau.edu/images/default/sample.pdf";
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $titulo = "Libreta de notas generado satisfactoriamente";
+        $cuerpo = "El documento lo puedes descarga del siguiente enlace $$urlDocumento";
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\LibretaNota  $libretaNota
-     * @return \Illuminate\Http\Response
-     */
-    public function show(LibretaNota $libretaNota)
-    {
-        //
-    }
+        $dispositivos = UsuarioDispositivo::where('USUARIO_ID', $idUsuario)->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\LibretaNota  $libretaNota
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(LibretaNota $libretaNota)
-    {
-        //
-    }
+        //notificación a un único dispositivo
+        // $response = Http::withHeaders([
+        //     'Authorization' => 'Key=AAAA2IEmK9E:APA91bF7yD-aVDTrcyaACO0HLKLNYNztdZh57GwaA3AXUBHi5nPiYWtuo5zgkTmpP0y0GsdFYsX4njgmamoMTviRqMRkhc43rO7oof_z1wCJPQwcQtABTCDXV8TgGSd6yIbvqSWkTrlU',
+        //     'Content-Type' => 'application/json'
+        // ])->post('https://fcm.googleapis.com/fcm/send', [
+        //     "notification" => [
+        //         "title" => $titulo,
+        //         "body" => $cuerpo,
+        //     ],
+        //     "to" => $dispositivo->TOKEN_DISPOSITIVO
+        // ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\LibretaNota  $libretaNota
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, LibretaNota $libretaNota)
-    {
-        //
-    }
+        $tokensDispositivos = [];
+        foreach ($dispositivos as $dispositivo) {
+           array_push($tokensDispositivos, $dispositivo->TOKEN_DISPOSITIVO);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\LibretaNota  $libretaNota
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(LibretaNota $libretaNota)
-    {
-        //
+        $response = Http::withHeaders([
+            'Authorization' => 'Key=AAAA2IEmK9E:APA91bF7yD-aVDTrcyaACO0HLKLNYNztdZh57GwaA3AXUBHi5nPiYWtuo5zgkTmpP0y0GsdFYsX4njgmamoMTviRqMRkhc43rO7oof_z1wCJPQwcQtABTCDXV8TgGSd6yIbvqSWkTrlU',
+            'Content-Type' => 'application/json'
+        ])->post('https://fcm.googleapis.com/fcm/send', [
+            "notification" => [
+                "title" => $titulo,
+                "body" => $cuerpo,
+            ],
+            "registration_ids" => $tokensDispositivos
+        ]);
+
+
+        return response()->json([
+            "title" => $titulo,
+            "body" => $cuerpo
+        ]);
     }
 }

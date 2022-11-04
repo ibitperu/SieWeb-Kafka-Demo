@@ -15,3 +15,13 @@ nodejs 14.15.4
 ## Recommended IDE Setup
 
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+
+
+## 
+https://console.firebase.google.com/project/sie-web-demo/overview
+
+firebase login
+firebase init
+Especifica tu sitio en firebase.json
+
+firebase deploy --only hosting:siewebdemo

@@ -146,6 +146,30 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
+app.post('/api/users/device', async (req, res) => {
+    try {
+        const query1 = 'SELECT * FROM USUARIOS_DISPOSITIVOS WHERE TOKEN_DISPOSITIVO=?';
+        const rows = await firebirdQuery(query1, [req.body.tokenDispositivo]);
+        if(rows.length == 1) {
+            res.status(200).send(req.body);
+            return;
+        }
+    } catch (error) {
+        res.status(500).send({ error: error.toString() });
+        return;
+    }
+
+    const query = 'INSERT INTO USUARIOS_DISPOSITIVOS(TOKEN_DISPOSITIVO, USUARIO_ID) VALUES(?,?)';
+    const params = [req.body.tokenDispositivo, req.body.usuarioId];
+    let resultado = -1;
+    try {
+        resultado = await firebirdExecute(query, params);
+        res.status(200).send(req.body);
+    } catch (error) {
+        res.status(500).send({ error: error.toString() });
+    }
+});
+
 var port = 9000;
 app.listen(port);
 console.log('Server started at http://localhost:' + port);

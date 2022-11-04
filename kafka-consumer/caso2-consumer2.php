@@ -28,7 +28,7 @@ $topicConf->set('auto.offset.reset', 'earliest');
 
 $topic = $rk->newTopic("cliente2-libretas", $topicConf);
 
-// Start consuming partition 0
+// Start consuming partition 1
 $topic->consumeStart(1, RD_KAFKA_OFFSET_STORED);
 
 while (true) {
