@@ -31,8 +31,9 @@
 </template>
 <script setup>
 
-const handleCerrarSesion = () => {
+const handleCerrarSesion = async () => {
     localStorage.clear();
+    // const sw = await window.navigator.serviceWorker.unregister('/firebase-messaging-sw.js')
     window.location.href = '/login'
 }
 </script>

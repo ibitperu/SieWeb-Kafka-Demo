@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SimpleLayout from '../layouts/SimpleLayout.vue';
 // import Home from '../pages/Home.vue';
 import Home from '../pages/Home.vue';
+import Websocket from '../pages/Websocket.vue';
 import Login from '../pages/Login.vue';
 // const Home = { template: '<div>Home</div>' }
 const About = { template: '<div>About</div>' }
@@ -19,6 +20,11 @@ const routes = [
                 path: '',
                 name: 'home',
                 component: Home,
+            },
+            {
+                path: 'websocket',
+                name: 'websocket',
+                component: Websocket,
             }
         ]
     },
